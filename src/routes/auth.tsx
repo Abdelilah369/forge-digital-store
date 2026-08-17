@@ -18,10 +18,10 @@ export const Route = createFileRoute("/auth")({
       { title: "Sign in — Forge Digital" },
       {
         name: "description",
-        content: "Sign in to access your Forge Digital downloads and seller tools.",
+        content: "Sign in to re-download the files you bought, or to manage products you sell.",
       },
       { property: "og:title", content: "Sign in — Forge Digital" },
-      { property: "og:description", content: "Access your downloads and seller tools." },
+      { property: "og:description", content: "Re-download your files, or manage your products." },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -86,10 +86,10 @@ function AuthPage() {
   return (
     <div className="mx-auto flex max-w-md flex-col px-4 py-20">
       <h1 className="font-display text-3xl font-bold tracking-tight">
-        {mode === "signin" ? "Welcome back" : "Create your account"}
+        {mode === "signin" ? "Sign in to get your files" : "Create an account in 20 seconds"}
       </h1>
       <p className="mt-2 text-sm text-muted-foreground">
-        Your purchases and downloads live in your Forge Digital account.
+        Your account is where your purchased files live, so you can download them again any time.
       </p>
 
       <Button variant="subtle" size="lg" className="mt-8" onClick={google}>

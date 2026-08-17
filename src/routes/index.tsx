@@ -9,6 +9,7 @@ import { HeroBackdrop } from "@/components/site/hero-backdrop";
 import { CategoryMarquee } from "@/components/site/marquee";
 import { ProductCard } from "@/components/site/product-card";
 import { CATEGORIES, formatPrice, categoryLabel } from "@/lib/catalog";
+import { ForgeSpark, SparkDivider, SparkEmpty } from "@/components/brand/spark";
 import { listProducts } from "@/lib/products.functions";
 import { ProductGridSkeleton } from "@/components/site/product-skeleton";
 import { cn } from "@/lib/utils";
@@ -25,16 +26,16 @@ export const Route = createFileRoute("/")({
   loader: ({ context }) => context.queryClient.ensureQueryData(featuredQuery),
   head: () => ({
     meta: [
-      { title: "Forge Digital — Handcrafted digital tools & assets" },
+      { title: "Forge Digital — Digital tools you can use in the next 10 minutes" },
       {
         name: "description",
         content:
-          "Templates, courses, apps and design assets built in small batches and delivered instantly.",
+          "Notion systems, courses, small apps and texture packs. Pay once, download in seconds, keep the files forever.",
       },
-      { property: "og:title", content: "Forge Digital — Handcrafted digital tools & assets" },
+      { property: "og:title", content: "Forge Digital — Digital tools you can use in the next 10 minutes" },
       {
         property: "og:description",
-        content: "Templates, courses, apps and design assets, delivered instantly.",
+        content: "Pay once, download in seconds, keep the files forever.",
       },
       {
         property: "og:image",
@@ -64,16 +65,16 @@ function HomePending() {
 
 const STEPS = [
   {
-    title: "Browse",
-    body: "Move through four tight categories. Every product is made in-house — no resold marketplace filler.",
+    title: "Pick one thing",
+    body: "Four shelves, no endless scroll. Every file here was made in this workshop — nothing resold from a marketplace.",
   },
   {
-    title: "Buy",
-    body: "Secure Stripe checkout, no account gymnastics. One card, one receipt, done in under a minute.",
+    title: "Pay with a card",
+    body: "Stripe checkout, one card, one receipt. No subscription, no upsell screen, no license tiers to decode.",
   },
   {
-    title: "Download",
-    body: "Files appear in your library immediately, behind verified purchase links that expire on their own.",
+    title: "Download it now",
+    body: "The file is in your library on the next screen. Links are tied to your purchase and expire on their own.",
   },
 ];
 
@@ -89,19 +90,22 @@ function Home() {
         <HeroBackdrop />
         <div className="relative mx-auto w-full max-w-[88rem] px-5 pb-20 sm:px-8 sm:pb-28">
           <Reveal y={16}>
-            <span className="eyebrow text-brand-ink">Independent digital workshop</span>
+            <span className="eyebrow inline-flex items-center gap-2 text-brand-ink">
+              <ForgeSpark className="h-3 w-3" ember={false} />
+              One-person workshop — {products.length} products, all made here
+            </span>
           </Reveal>
           <Reveal delay={0.08}>
             <h1 className="display-xl mt-6 max-w-[16em]">
-              Handcrafted digital <em className="italic text-brand-ink">tools</em> for people who
-              make things.
+              Buy it tonight, <em className="italic text-brand-ink">use it</em> in your project
+              tonight.
             </h1>
           </Reveal>
           <div className="mt-10 flex flex-col gap-8 border-t border-border pt-8 lg:flex-row lg:items-center lg:justify-between">
             <Reveal delay={0.16}>
               <p className="max-w-md text-lg text-muted-foreground">
-                Templates, courses, software and design assets — sold direct, delivered the second
-                you buy.
+                Notion systems, courses, small apps and texture packs. Pay once, the files are in
+                your library before the receipt lands in your inbox.
               </p>
             </Reveal>
             <Reveal delay={0.22}>
@@ -111,7 +115,7 @@ function Home() {
                     to="/products"
                     className="inline-flex items-center gap-3 rounded-full bg-primary px-8 py-4 text-base font-medium text-primary-foreground"
                   >
-                    Browse the catalog
+                    See all {products.length} products
                     <ArrowRight className="h-4 w-4" />
                   </Link>
                 </Magnetic>
@@ -120,7 +124,7 @@ function Home() {
                   search={{ category: "templates-printables" }}
                   className="text-sm font-medium underline decoration-border decoration-2 underline-offset-8 transition-colors hover:decoration-primary"
                 >
-                  Start with templates
+                  Or start with the templates
                 </Link>
               </div>
             </Reveal>
@@ -134,16 +138,24 @@ function Home() {
       <section className="mx-auto max-w-[88rem] px-5 py-24 sm:px-8 sm:py-32">
         <Reveal>
           <div className="flex flex-wrap items-end justify-between gap-6">
-            <h2 className="display-lg max-w-xl">Fresh from the forge</h2>
+            <h2 className="display-lg max-w-xl">Newest off the anvil</h2>
             <Link
               to="/products"
               className="group inline-flex items-center gap-2 text-sm font-medium text-brand-ink"
             >
-              View the full catalog
+              Browse every product
               <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
             </Link>
           </div>
         </Reveal>
+
+        {bento.length === 0 && (
+          <SparkEmpty
+            className="mt-14"
+            title="The forge is still warming up"
+            body="The first products land here as soon as they're finished."
+          />
+        )}
 
         {bento.length > 0 && (
           <RevealGroup
@@ -202,7 +214,7 @@ function Home() {
                   index % 2 === 0 ? "text-primary" : "text-brand-ink",
                 )}
               >
-                {index === 0 ? "Bestseller" : "Also worth your time"} — {categoryLabel(product.category)}
+                {index === 0 ? "Most bought this month" : "Quietly the most useful one"} — {categoryLabel(product.category)}
               </span>
               <h2 className="display-lg mt-5">{product.title}</h2>
               <p
@@ -223,7 +235,7 @@ function Home() {
                     params={{ slug: product.slug }}
                     className="inline-flex items-center gap-3 rounded-full bg-primary px-7 py-4 text-base font-medium text-primary-foreground"
                   >
-                    View product
+                    See what's inside
                     <ArrowUpRight className="h-4 w-4" />
                   </Link>
                 </Magnetic>
@@ -236,7 +248,7 @@ function Home() {
       {/* ---------------- Categories ---------------- */}
       <section className="mx-auto max-w-[88rem] px-5 py-24 sm:px-8 sm:py-32">
         <Reveal>
-          <h2 className="display-lg max-w-2xl">Four categories, nothing filler.</h2>
+          <h2 className="display-lg max-w-2xl">Four shelves. That's the whole shop.</h2>
         </Reveal>
         <RevealGroup className="mt-14 grid gap-px overflow-hidden rounded-3xl border border-border bg-border sm:grid-cols-2">
           {CATEGORIES.map((category) => (
@@ -253,7 +265,8 @@ function Home() {
                   <p className="mt-4 max-w-sm text-muted-foreground">{category.blurb}</p>
                 </div>
                 <span className="inline-flex items-center gap-2 text-sm font-medium text-brand-ink">
-                  Explore
+                  <ForgeSpark className="h-3 w-3" ember={false} />
+                  Browse {(category.label.split(" & ")[0] ?? category.label).toLowerCase()}
                   <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
                 </span>
               </Link>
@@ -266,7 +279,10 @@ function Home() {
       <section className="border-y border-border bg-surface">
         <div className="mx-auto max-w-[88rem] px-5 py-24 sm:px-8 sm:py-32">
           <Reveal className="grid gap-10 lg:grid-cols-12">
-            <span className="eyebrow text-muted-foreground lg:col-span-3">From the workshop</span>
+            <div className="lg:col-span-3">
+              <span className="eyebrow text-muted-foreground">Why these files exist</span>
+              <SparkDivider className="mt-6 max-w-40" />
+            </div>
             <blockquote className="lg:col-span-9">
               <p className="pull-quote max-w-4xl">
                 “A good template should feel like it was made for one person, then quietly shared
@@ -284,9 +300,12 @@ function Home() {
       <section className="bg-ink text-ink-foreground">
         <div className="mx-auto max-w-[88rem] px-5 py-24 sm:px-8 sm:py-36">
           <Reveal>
-            <span className="eyebrow text-primary">How it works</span>
+            <span className="eyebrow inline-flex items-center gap-2 text-primary">
+              <ForgeSpark className="h-3 w-3" ember={false} />
+              Three steps, about two minutes
+            </span>
             <h2 className="display-lg mt-6 max-w-2xl">
-              Browse, buy, download — <em className="italic">instantly</em>.
+              From card to <em className="italic">downloaded file</em> before your coffee cools.
             </h2>
           </Reveal>
 
@@ -294,8 +313,9 @@ function Home() {
             {STEPS.map((step, index) => (
               <RevealItem key={step.title}>
                 <div className="border-t border-ink-foreground/20 pt-8">
-                  <span className="font-display text-6xl text-primary sm:text-7xl">
+                  <span className="flex items-center gap-3 font-display text-6xl text-primary sm:text-7xl">
                     0{index + 1}
+                    <ForgeSpark className="h-4 w-4" ember={false} />
                   </span>
                   <h3 className="mt-8 font-display text-3xl">{step.title}</h3>
                   <p className="mt-4 max-w-sm text-ink-muted">{step.body}</p>
@@ -313,10 +333,10 @@ function Home() {
           stagger={0.12}
         >
           {[
-            { to: 500, suffix: "+", label: "Creators in the workshop" },
-            { to: 10000, suffix: "+", label: "Files downloaded" },
-            { to: 4, suffix: ".9", label: "Average product rating" },
-            { to: 12, suffix: " yrs", label: "Making tools for makers" },
+            { to: 500, suffix: "+", label: "People who bought and came back" },
+            { to: 10000, suffix: "+", label: "Files downloaded, none expired" },
+            { to: 30, suffix: " sec", label: "Typical wait from payment to file" },
+            { to: 4, suffix: ".9", label: "Average rating out of 5" },
           ].map((stat) => (
             <RevealItem key={stat.label}>
               <CountUp

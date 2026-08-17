@@ -8,6 +8,7 @@ import { CATEGORIES, categoryLabel } from "@/lib/catalog";
 import { listProducts } from "@/lib/products.functions";
 import { ProductGridSkeleton } from "@/components/site/product-skeleton";
 import { cn } from "@/lib/utils";
+import { ForgeSpark, SparkEmpty } from "@/components/brand/spark";
 
 const searchSchema = z.object({ category: z.string().optional() });
 
@@ -23,16 +24,16 @@ export const Route = createFileRoute("/products/")({
   loader: ({ context, deps }) => context.queryClient.ensureQueryData(productsQuery(deps.category)),
   head: () => ({
     meta: [
-      { title: "Digital product catalog — Forge Digital" },
+      { title: "Every product — Forge Digital" },
       {
         name: "description",
         content:
-          "Browse Forge Digital templates, printables, courses, ebooks, apps and creative assets.",
+          "Templates, printables, courses, small apps and texture packs. Pay once, download in seconds.",
       },
-      { property: "og:title", content: "Digital product catalog — Forge Digital" },
+      { property: "og:title", content: "Every product — Forge Digital" },
       {
         property: "og:description",
-        content: "Templates, courses, apps and creative assets from an independent workshop.",
+        content: "Pay once, download in seconds, keep the files forever.",
       },
     ],
   }),
@@ -61,18 +62,21 @@ function ProductsPage() {
       <section className="border-b border-border bg-ink text-ink-foreground">
         <div className="mx-auto max-w-[88rem] px-5 py-20 sm:px-8 sm:py-28">
           <Reveal y={16}>
-            <span className="eyebrow text-primary">Catalog</span>
+            <span className="eyebrow inline-flex items-center gap-2 text-primary">
+              <ForgeSpark className="h-3 w-3" ember={false} />
+              {products.length} product{products.length === 1 ? "" : "s"}, all made here
+            </span>
           </Reveal>
           <Reveal delay={0.06}>
             <h1 className="display-lg mt-6 max-w-3xl">
-              {category ? categoryLabel(category) : "Everything we've forged."}
+              {category ? categoryLabel(category) : "Everything on the shelf."}
             </h1>
           </Reveal>
           <Reveal delay={0.12}>
             <p className="mt-6 max-w-xl text-lg text-ink-muted">
               {category
                 ? CATEGORIES.find((c) => c.slug === category)?.blurb
-                : "Notion systems, printables, courses, small software and texture packs — all made in-house."}
+                : "Notion systems, printables, courses, small software and texture packs. Pick one, pay, download it in the next minute."}
             </p>
           </Reveal>
         </div>
@@ -87,7 +91,11 @@ function ProductsPage() {
         </div>
 
         {products.length === 0 ? (
-          <p className="mt-20 text-muted-foreground">No products in this category yet.</p>
+          <SparkEmpty
+            className="mt-16 mb-24"
+            title="Nothing on this shelf yet"
+            body="This category is still being built. The other three have products ready to download."
+          />
         ) : (
           <RevealGroup className="mt-12 grid gap-6 pb-24 sm:grid-cols-2 lg:grid-cols-3" stagger={0.09}>
             {products.map((product, index) => {

@@ -9,14 +9,15 @@ import { formatPrice } from "@/lib/catalog";
 import { useCart } from "@/lib/cart";
 import { createCheckoutSession } from "@/lib/checkout.functions";
 import { useSession } from "@/lib/use-session";
+import { SparkEmpty } from "@/components/brand/spark";
 
 export const Route = createFileRoute("/cart")({
   head: () => ({
     meta: [
       { title: "Your cart — Forge Digital" },
-      { name: "description", content: "Review your Forge Digital order before secure checkout." },
+      { name: "description", content: "Check your files and pay by card. Downloads unlock the moment payment clears." },
       { property: "og:title", content: "Your cart — Forge Digital" },
-      { property: "og:description", content: "Review your order before secure checkout." },
+      { property: "og:description", content: "Pay by card, download straight after." },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -50,14 +51,21 @@ function CartPage() {
   return (
     <div className="mx-auto max-w-4xl px-4 py-14">
       <h1 className="font-display text-3xl font-bold tracking-tight">Your cart</h1>
+      <p className="mt-2 text-sm text-muted-foreground">
+        Pay by card and the files unlock on the next screen.
+      </p>
 
       {items.length === 0 ? (
-        <div className="mt-10 rounded-xl border border-border bg-card p-10 text-center">
-          <p className="text-muted-foreground">Your cart is empty.</p>
-          <Link to="/products" className="mt-6 inline-block">
-            <Button>Browse the catalog</Button>
-          </Link>
-        </div>
+        <SparkEmpty
+          className="mt-10"
+          title="Nothing in the cart yet"
+          body="Add a template, course or asset pack and it shows up here."
+          action={
+            <Link to="/products">
+              <Button>Browse every product</Button>
+            </Link>
+          }
+        />
       ) : (
         <div className="mt-10 space-y-4">
           {items.map((item) => (
@@ -104,10 +112,10 @@ function CartPage() {
               onClick={checkout}
             >
               {pending && <Loader2 className="animate-spin" />}
-              {user ? "Checkout with Stripe" : "Sign in to checkout"}
+              {user ? `Pay ${formatPrice(totalCents)} by card` : "Sign in, then pay by card"}
             </Button>
             <p className="mt-3 text-center text-xs text-muted-foreground">
-              Stripe test mode — use card 4242 4242 4242 4242 with any future expiry.
+              Test mode: pay with 4242 4242 4242 4242 and any future expiry date.
             </p>
           </div>
         </div>

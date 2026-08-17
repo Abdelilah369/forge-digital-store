@@ -4,6 +4,7 @@ import { ArrowUpRight } from "lucide-react";
 import { Magnetic } from "@/components/motion/magnetic";
 import { Reveal } from "@/components/motion/reveal";
 import { CATEGORIES } from "@/lib/catalog";
+import { SparkMark, SparkDivider } from "@/components/brand/spark";
 
 export function SiteFooter() {
   return (
@@ -12,15 +13,15 @@ export function SiteFooter() {
         <Reveal>
           <div className="grid gap-10 border-b border-ink-foreground/15 pb-16 lg:grid-cols-[1.4fr_auto] lg:items-end">
             <h2 className="display-lg max-w-3xl">
-              Find the one tool that makes <em className="italic text-primary">this</em> project
-              easier.
+              One file could take three days off <em className="italic text-primary">this</em>{" "}
+              project.
             </h2>
             <Magnetic>
               <Link
                 to="/products"
                 className="inline-flex items-center gap-4 rounded-full bg-primary px-8 py-5 text-base font-medium text-primary-foreground"
               >
-                Browse the catalog
+                Find that file
                 <ArrowUpRight className="h-5 w-5" />
               </Link>
             </Magnetic>
@@ -30,14 +31,13 @@ export function SiteFooter() {
         <div className="grid gap-10 pt-14 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <div className="flex items-center gap-3">
-              <span className="grid h-9 w-9 place-items-center rounded-full bg-primary font-display text-base font-semibold text-primary-foreground">
-                F
-              </span>
+              <SparkMark />
               <span className="font-display text-xl">Forge Digital</span>
             </div>
             <p className="mt-4 max-w-xs text-sm text-ink-muted">
-              Handcrafted digital tools and assets, made in small batches and sold direct.
+              Small-batch digital tools, sold direct. Buy once, download instantly, keep the files.
             </p>
+            <SparkDivider className="mt-6 max-w-32" tone="ink" />
           </div>
 
           <div className="lg:col-span-2">
@@ -65,7 +65,7 @@ export function SiteFooter() {
                   to="/library"
                   className="text-sm text-ink-muted transition-colors hover:text-ink-foreground"
                 >
-                  My downloads
+                  Files I bought
                 </Link>
               </li>
               <li>

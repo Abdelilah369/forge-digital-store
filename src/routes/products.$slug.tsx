@@ -6,6 +6,7 @@ import { toast } from "sonner";
 
 import { Magnetic } from "@/components/motion/magnetic";
 import { Reveal } from "@/components/motion/reveal";
+import { ForgeSpark } from "@/components/brand/spark";
 import { Button } from "@/components/ui/button";
 import { categoryLabel, formatPrice } from "@/lib/catalog";
 import { useCart } from "@/lib/cart";
@@ -49,11 +50,14 @@ export const Route = createFileRoute("/products/$slug")({
 function ProductMissing() {
   return (
     <div className="mx-auto max-w-2xl px-5 py-32 text-center">
-      <h1 className="display-lg">We couldn't find that product</h1>
-      <p className="mt-4 text-muted-foreground">It may have been unpublished or renamed.</p>
+      <ForgeSpark className="mx-auto h-10 w-10 text-primary" />
+      <h1 className="display-lg mt-6">That product isn't on the shelf</h1>
+      <p className="mt-4 text-muted-foreground">
+        It was renamed or taken down. The rest of the catalog is a click away.
+      </p>
       <Link to="/products" className="mt-8 inline-block">
         <Button variant="subtle" className="rounded-full">
-          Back to catalog
+          Browse every product
         </Button>
       </Link>
     </div>
@@ -147,7 +151,7 @@ function ProductDetail() {
                 }}
               >
                 {inCart ? <Check /> : <ShoppingBag />}
-                {inCart ? "In cart" : "Add to cart"}
+                {inCart ? "Already in cart" : "Add to cart"}
               </Button>
             </Magnetic>
             <Link
@@ -157,7 +161,7 @@ function ProductDetail() {
               }}
               className="text-sm font-medium underline decoration-border decoration-2 underline-offset-8 transition-colors hover:decoration-primary"
             >
-              Buy now
+              Buy it now and download
             </Link>
           </div>
 
@@ -166,8 +170,8 @@ function ProductDetail() {
           </div>
 
           <p className="mt-10 border-l-2 border-primary bg-surface p-5 text-xs text-muted-foreground">
-            Digital download. After checkout your files appear in your library, gated behind
-            purchase verification — no public links.
+            Instant download, no shipping. After payment the file shows up on your files page,
+            behind a link tied to your purchase — nothing public, nothing emailed as an attachment.
           </p>
         </Reveal>
       </div>

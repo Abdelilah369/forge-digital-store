@@ -261,7 +261,7 @@ function ProductEditor() {
                 className="h-24 w-full rounded-md object-cover"
               />
             )}
-            <label className="inline-flex cursor-pointer items-center gap-2 text-sm text-accent-foreground">
+            <label className="inline-flex cursor-pointer items-center gap-2 text-sm text-brand-ink">
               {uploading === "cover" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
               Upload image
               <input
@@ -281,7 +281,7 @@ function ProductEditor() {
             <p className="text-sm text-muted-foreground">
               {form.file_name ?? "No file attached yet"}
             </p>
-            <label className="inline-flex cursor-pointer items-center gap-2 text-sm text-accent-foreground">
+            <label className="inline-flex cursor-pointer items-center gap-2 text-sm text-brand-ink">
               {uploading === "download" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
               Upload file
               <input

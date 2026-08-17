@@ -56,7 +56,7 @@ function CheckoutSuccess() {
         </>
       ) : data?.paid ? (
         <>
-          <CheckCircle2 className="mx-auto h-12 w-12 text-accent-foreground" />
+          <CheckCircle2 className="mx-auto h-12 w-12 text-brand-ink" />
           <h1 className="mt-6 font-display text-3xl font-bold tracking-tight">Thank you!</h1>
           <p className="mt-3 text-muted-foreground">
             {data.products.length} item{data.products.length === 1 ? "" : "s"} unlocked. Your files

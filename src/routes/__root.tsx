@@ -23,25 +23,36 @@ import { supabase } from "@/integrations/supabase/client";
 
 function NotFoundComponent() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
-        <h1 className="display-lg text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          The page you're looking for doesn't exist or has been moved.
+    <div className="bg-background">
+      <div className="mx-auto flex min-h-[80svh] max-w-[88rem] flex-col justify-center px-5 py-24 sm:px-8">
+        <span className="eyebrow text-brand-ink">Error 404</span>
+        <p className="display-xl mt-6 max-w-[14em]">
+          This page was never <em className="italic text-brand-ink">forged</em>.
         </p>
-        <div className="mt-6">
-          <Link
-            to="/"
-            className="inline-flex items-center justify-center rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-colors hover:brightness-105"
-          >
-            Go home
-          </Link>
+        <div className="mt-10 flex flex-col gap-6 border-t border-border pt-8 sm:flex-row sm:items-center sm:justify-between">
+          <p className="max-w-md text-lg text-muted-foreground">
+            The link is broken or the product has moved. The catalog is still open.
+          </p>
+          <div className="flex flex-wrap items-center gap-5">
+            <Link
+              to="/products"
+              className="inline-flex min-h-12 items-center gap-3 rounded-full bg-primary px-7 text-base font-medium text-primary-foreground"
+            >
+              Browse the catalog
+            </Link>
+            <Link
+              to="/"
+              className="text-sm font-medium underline decoration-border decoration-2 underline-offset-8 transition-colors hover:decoration-primary"
+            >
+              Back home
+            </Link>
+          </div>
         </div>
       </div>
     </div>
   );
 }
+
 
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   console.error(error);

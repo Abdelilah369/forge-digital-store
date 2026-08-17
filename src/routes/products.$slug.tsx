@@ -88,7 +88,7 @@ function ProductDetail() {
 
       <div className="mt-10 grid gap-14 lg:grid-cols-[1.15fr_1fr] lg:gap-20">
         <Reveal>
-          <div className="group overflow-hidden rounded-[2rem] border border-border bg-surface">
+          <div className="art-frame group rounded-tl-[3rem] border border-border">
             {gallery[active] ? (
               <img
                 src={gallery[active]}
@@ -112,7 +112,7 @@ function ProductDetail() {
                   onClick={() => setActive(index)}
                   aria-label={`Preview ${index + 1}`}
                   className={
-                    "h-16 w-20 overflow-hidden rounded-xl border-2 transition-colors " +
+                    "art-frame h-16 w-20 rounded-br-lg border-2 transition-colors " +
                     (index === active ? "border-primary" : "border-border")
                   }
                 >
@@ -165,7 +165,7 @@ function ProductDetail() {
             {product.description}
           </div>
 
-          <p className="mt-10 rounded-2xl border border-border bg-surface p-5 text-xs text-muted-foreground">
+          <p className="mt-10 border-l-2 border-primary bg-surface p-5 text-xs text-muted-foreground">
             Digital download. After checkout your files appear in your library, gated behind
             purchase verification — no public links.
           </p>

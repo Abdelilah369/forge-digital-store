@@ -4,7 +4,8 @@ import { Check, ShoppingBag } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
-import { Badge } from "@/components/ui/badge";
+import { Magnetic } from "@/components/motion/magnetic";
+import { Reveal } from "@/components/motion/reveal";
 import { Button } from "@/components/ui/button";
 import { categoryLabel, formatPrice } from "@/lib/catalog";
 import { useCart } from "@/lib/cart";
@@ -25,7 +26,10 @@ export const Route = createFileRoute("/products/$slug")({
   head: ({ loaderData }) => {
     if (!loaderData) {
       return {
-        meta: [{ title: "Product unavailable — Forge Digital" }, { name: "robots", content: "noindex" }],
+        meta: [
+          { title: "Product unavailable — Forge Digital" },
+          { name: "robots", content: "noindex" },
+        ],
       };
     }
     const title = `${loaderData.title} — Forge Digital`;
@@ -44,11 +48,13 @@ export const Route = createFileRoute("/products/$slug")({
 
 function ProductMissing() {
   return (
-    <div className="mx-auto max-w-2xl px-4 py-24 text-center">
-      <h1 className="font-display text-2xl font-semibold">We couldn't find that product</h1>
-      <p className="mt-2 text-muted-foreground">It may have been unpublished or renamed.</p>
-      <Link to="/products" className="mt-6 inline-block">
-        <Button variant="subtle">Back to catalog</Button>
+    <div className="mx-auto max-w-2xl px-5 py-32 text-center">
+      <h1 className="display-lg">We couldn't find that product</h1>
+      <p className="mt-4 text-muted-foreground">It may have been unpublished or renamed.</p>
+      <Link to="/products" className="mt-8 inline-block">
+        <Button variant="subtle" className="rounded-full">
+          Back to catalog
+        </Button>
       </Link>
     </div>
   );
@@ -65,7 +71,7 @@ function ProductDetail() {
   const inCart = has(product.id);
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-14">
+    <div className="mx-auto max-w-[88rem] px-5 py-14 sm:px-8">
       <nav className="text-sm text-muted-foreground">
         <Link to="/products" className="hover:text-foreground">
           Catalog
@@ -80,16 +86,16 @@ function ProductDetail() {
         </Link>
       </nav>
 
-      <div className="mt-8 grid gap-12 lg:grid-cols-[1.15fr_1fr]">
-        <div>
-          <div className="overflow-hidden rounded-xl border border-border bg-surface">
+      <div className="mt-10 grid gap-14 lg:grid-cols-[1.15fr_1fr] lg:gap-20">
+        <Reveal>
+          <div className="group overflow-hidden rounded-[2rem] border border-border bg-surface">
             {gallery[active] ? (
               <img
                 src={gallery[active]}
                 alt={`${product.title} preview`}
-                width={1200}
-                height={900}
-                className="aspect-[4/3] w-full object-cover"
+                width={1400}
+                height={1050}
+                className="aspect-[4/3] w-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]"
               />
             ) : (
               <div className="grid aspect-[4/3] place-items-center text-muted-foreground">
@@ -98,7 +104,7 @@ function ProductDetail() {
             )}
           </div>
           {gallery.length > 1 && (
-            <div className="mt-3 flex gap-3">
+            <div className="mt-4 flex gap-3">
               {gallery.map((src, index) => (
                 <button
                   key={src}
@@ -106,7 +112,7 @@ function ProductDetail() {
                   onClick={() => setActive(index)}
                   aria-label={`Preview ${index + 1}`}
                   className={
-                    "h-16 w-20 overflow-hidden rounded-md border-2 transition-colors " +
+                    "h-16 w-20 overflow-hidden rounded-xl border-2 transition-colors " +
                     (index === active ? "border-primary" : "border-border")
                   }
                 >
@@ -115,51 +121,55 @@ function ProductDetail() {
               ))}
             </div>
           )}
-        </div>
+        </Reveal>
 
-        <div>
-          <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="secondary">{categoryLabel(product.category)}</Badge>
-            {product.is_sample && <Badge variant="outline">Sample product</Badge>}
+        <Reveal delay={0.08}>
+          <div className="flex flex-wrap items-center gap-3 text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
+            <span>{categoryLabel(product.category)}</span>
+            {product.is_sample && (
+              <span className="rounded-full border border-border px-2 py-0.5">Sample product</span>
+            )}
           </div>
-          <h1 className="mt-4 font-display text-3xl font-bold tracking-tight">{product.title}</h1>
-          <p className="mt-3 text-lg text-muted-foreground">{product.short_description}</p>
-          <p className="mt-6 font-display text-3xl font-semibold">
+          <h1 className="display-lg mt-6">{product.title}</h1>
+          <p className="mt-6 text-lg text-muted-foreground">{product.short_description}</p>
+          <p className="mt-8 font-display text-5xl tabular-nums">
             {formatPrice(product.price_cents, product.currency)}
           </p>
 
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Button
-              size="lg"
-              onClick={() => {
-                add(product);
-                toast.success(inCart ? "Already in your cart" : `${product.title} added to cart`);
-              }}
-            >
-              {inCart ? <Check /> : <ShoppingBag />}
-              {inCart ? "In cart" : "Add to cart"}
-            </Button>
+          <div className="mt-8 flex flex-wrap items-center gap-4">
+            <Magnetic>
+              <Button
+                size="lg"
+                className="rounded-full px-8"
+                onClick={() => {
+                  add(product);
+                  toast.success(inCart ? "Already in your cart" : `${product.title} added to cart`);
+                }}
+              >
+                {inCart ? <Check /> : <ShoppingBag />}
+                {inCart ? "In cart" : "Add to cart"}
+              </Button>
+            </Magnetic>
             <Link
               to="/cart"
               onClick={() => {
                 if (!inCart) add(product);
               }}
+              className="text-sm font-medium underline decoration-border decoration-2 underline-offset-8 transition-colors hover:decoration-primary"
             >
-              <Button variant="subtle" size="lg">
-                Buy now
-              </Button>
+              Buy now
             </Link>
           </div>
 
-          <div className="mt-10 space-y-4 whitespace-pre-line text-sm leading-relaxed text-muted-foreground">
+          <div className="mt-12 space-y-4 whitespace-pre-line leading-relaxed text-muted-foreground">
             {product.description}
           </div>
 
-          <p className="mt-8 rounded-lg border border-border bg-surface p-4 text-xs text-muted-foreground">
+          <p className="mt-10 rounded-2xl border border-border bg-surface p-5 text-xs text-muted-foreground">
             Digital download. After checkout your files appear in your library, gated behind
             purchase verification — no public links.
           </p>
-        </div>
+        </Reveal>
       </div>
     </div>
   );

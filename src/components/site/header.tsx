@@ -1,8 +1,9 @@
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
+import { motion, useMotionValueEvent, useScroll } from "framer-motion";
 import { Menu, ShoppingBag, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,6 +11,7 @@ import { CATEGORIES } from "@/lib/catalog";
 import { useCart } from "@/lib/cart";
 import { useSession } from "@/lib/use-session";
 import { checkIsAdmin } from "@/lib/admin.functions";
+import { cn } from "@/lib/utils";
 
 export function SiteHeader() {
   const { items } = useCart();
@@ -18,6 +20,26 @@ export function SiteHeader() {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const adminCheck = useServerFn(checkIsAdmin);
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+
+  const { scrollY } = useScroll();
+  const lastY = useRef(0);
+  const [hidden, setHidden] = useState(false);
+  const [solid, setSolid] = useState(false);
+
+  useMotionValueEvent(scrollY, "change", (y) => {
+    const previous = lastY.current;
+    lastY.current = y;
+    setSolid(y > 80);
+    if (open) return;
+    setHidden(y > 160 && y > previous);
+  });
+
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
+
+  const overHero = pathname === "/" && !solid;
 
   const { data: admin } = useQuery({
     queryKey: ["is-admin", user?.id],
@@ -34,29 +56,39 @@ export function SiteHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4">
-        <Link to="/" className="flex items-center gap-2">
-          <span className="grid h-8 w-8 place-items-center rounded-md bg-primary font-display text-sm font-bold text-primary-foreground">
+    <motion.header
+      initial={false}
+      animate={{ y: hidden ? "-110%" : "0%" }}
+      transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+      className={cn(
+        "fixed inset-x-0 top-0 z-50 transition-colors duration-500",
+        solid
+          ? "border-b border-border bg-background/80 backdrop-blur-xl"
+          : "border-b border-transparent bg-transparent",
+      )}
+    >
+      <div className="mx-auto flex h-20 max-w-[88rem] items-center justify-between gap-6 px-5 sm:px-8">
+        <Link to="/" className="flex min-w-0 items-center gap-3">
+          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary font-display text-base font-semibold text-primary-foreground">
             F
           </span>
-          <span className="font-display text-lg font-semibold tracking-tight">Forge Digital</span>
+          <span className="truncate font-display text-xl tracking-tight">Forge Digital</span>
         </Link>
 
-        <nav className="hidden items-center gap-1 md:flex">
+        <nav className="hidden items-center gap-7 lg:flex">
           <Link
             to="/products"
-            className="rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
             activeProps={{ className: "text-foreground" }}
           >
-            All products
+            Catalog
           </Link>
           {CATEGORIES.map((category) => (
             <Link
               key={category.slug}
               to="/products"
               search={{ category: category.slug }}
-              className="rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
             >
               {category.label.split(" & ")[0]}
             </Link>
@@ -65,7 +97,7 @@ export function SiteHeader() {
 
         <div className="flex items-center gap-2">
           <Link to="/cart" className="relative" aria-label="Cart">
-            <Button variant="ghost" size="icon">
+            <Button variant="ghost" size="icon" className="rounded-full">
               <ShoppingBag />
             </Button>
             {items.length > 0 && (
@@ -79,24 +111,26 @@ export function SiteHeader() {
             {user ? (
               <>
                 <Link to="/library">
-                  <Button variant="ghost" size="sm">
+                  <Button variant="ghost" size="sm" className="rounded-full">
                     Library
                   </Button>
                 </Link>
                 {admin?.isAdmin && (
                   <Link to="/admin">
-                    <Button variant="subtle" size="sm">
+                    <Button variant="subtle" size="sm" className="rounded-full">
                       Seller area
                     </Button>
                   </Link>
                 )}
-                <Button variant="outline" size="sm" onClick={signOut}>
+                <Button variant="outline" size="sm" className="rounded-full" onClick={signOut}>
                   Sign out
                 </Button>
               </>
             ) : (
               <Link to="/auth">
-                <Button size="sm">Sign in</Button>
+                <Button size="sm" className="rounded-full">
+                  Sign in
+                </Button>
               </Link>
             )}
           </div>
@@ -104,7 +138,7 @@ export function SiteHeader() {
           <Button
             variant="ghost"
             size="icon"
-            className="md:hidden"
+            className="rounded-full lg:hidden"
             aria-label="Menu"
             onClick={() => setOpen((v) => !v)}
           >
@@ -114,10 +148,10 @@ export function SiteHeader() {
       </div>
 
       {open && (
-        <div className="border-t border-border bg-background px-4 py-3 md:hidden">
+        <div className="border-t border-border bg-background px-5 py-4 lg:hidden">
           <div className="flex flex-col gap-1">
-            <Link to="/products" onClick={() => setOpen(false)} className="py-2 text-sm">
-              All products
+            <Link to="/products" onClick={() => setOpen(false)} className="py-2 font-display text-2xl">
+              Catalog
             </Link>
             {CATEGORIES.map((category) => (
               <Link
@@ -130,28 +164,28 @@ export function SiteHeader() {
                 {category.label}
               </Link>
             ))}
-            <div className="mt-2 flex gap-2">
+            <div className="mt-3 flex gap-2">
               {user ? (
                 <>
                   <Link to="/library" onClick={() => setOpen(false)} className="flex-1">
-                    <Button variant="subtle" size="sm" className="w-full">
+                    <Button variant="subtle" size="sm" className="w-full rounded-full">
                       Library
                     </Button>
                   </Link>
                   {admin?.isAdmin && (
                     <Link to="/admin" onClick={() => setOpen(false)} className="flex-1">
-                      <Button variant="subtle" size="sm" className="w-full">
+                      <Button variant="subtle" size="sm" className="w-full rounded-full">
                         Seller
                       </Button>
                     </Link>
                   )}
-                  <Button variant="outline" size="sm" onClick={signOut}>
+                  <Button variant="outline" size="sm" className="rounded-full" onClick={signOut}>
                     Sign out
                   </Button>
                 </>
               ) : (
                 <Link to="/auth" onClick={() => setOpen(false)} className="flex-1">
-                  <Button size="sm" className="w-full">
+                  <Button size="sm" className="w-full rounded-full">
                     Sign in
                   </Button>
                 </Link>
@@ -160,6 +194,11 @@ export function SiteHeader() {
           </div>
         </div>
       )}
-    </header>
+
+      {/* keeps the hero readable while the bar is transparent */}
+      {overHero && (
+        <div className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-background/60 to-transparent" />
+      )}
+    </motion.header>
   );
 }

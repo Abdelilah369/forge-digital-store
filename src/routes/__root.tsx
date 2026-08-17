@@ -31,20 +31,20 @@ function NotFoundComponent() {
         </p>
         <div className="mt-10 flex flex-col gap-6 border-t border-border pt-8 sm:flex-row sm:items-center sm:justify-between">
           <p className="max-w-md text-lg text-muted-foreground">
-            The link is broken or the product has moved. The catalog is still open.
+            That link is broken or the product was renamed. Everything else is still on the shelf.
           </p>
           <div className="flex flex-wrap items-center gap-5">
             <Link
               to="/products"
               className="inline-flex min-h-12 items-center gap-3 rounded-full bg-primary px-7 text-base font-medium text-primary-foreground"
             >
-              Browse the catalog
+              Browse every product
             </Link>
             <Link
               to="/"
               className="text-sm font-medium underline decoration-border decoration-2 underline-offset-8 transition-colors hover:decoration-primary"
             >
-              Back home
+              Back to the homepage
             </Link>
           </div>
         </div>

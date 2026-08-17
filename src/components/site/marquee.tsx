@@ -1,5 +1,6 @@
 import { CATEGORIES } from "@/lib/catalog";
 import { cn } from "@/lib/utils";
+import { ForgeSpark } from "@/components/brand/spark";
 
 /** Infinite horizontal ticker of category names. Pure CSS, reduced-motion safe. */
 export function CategoryMarquee({ className }: { className?: string }) {
@@ -18,7 +19,7 @@ export function CategoryMarquee({ className }: { className?: string }) {
         {strip.map((word, index) => (
           <span key={`${word}-${index}`} className="flex items-center gap-10">
             <span className="font-display text-3xl italic tracking-tight sm:text-5xl">{word}</span>
-            <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+            <ForgeSpark className="h-4 w-4 text-primary sm:h-5 sm:w-5" ember={false} />
           </span>
         ))}
       </div>

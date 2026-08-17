@@ -1,13 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { queryOptions } from "@tanstack/react-query";
-import { ArrowRight, Download, ShieldCheck, Sparkles } from "lucide-react";
+import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 
-import heroAsset from "@/assets/hero.jpg.asset.json";
+import { Magnetic } from "@/components/motion/magnetic";
+import { CountUp } from "@/components/motion/count-up";
+import { Reveal, RevealGroup, RevealItem } from "@/components/motion/reveal";
+import { HeroBackdrop } from "@/components/site/hero-backdrop";
+import { CategoryMarquee } from "@/components/site/marquee";
 import { ProductCard } from "@/components/site/product-card";
-import { Button } from "@/components/ui/button";
-import { CATEGORIES } from "@/lib/catalog";
+import { CATEGORIES, formatPrice, categoryLabel } from "@/lib/catalog";
 import { listProducts } from "@/lib/products.functions";
+import { cn } from "@/lib/utils";
 
 const featuredQuery = queryOptions({
   queryKey: ["products", "all"],
@@ -34,108 +37,254 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
+const STEPS = [
+  {
+    title: "Browse",
+    body: "Move through four tight categories. Every product is made in-house — no resold marketplace filler.",
+  },
+  {
+    title: "Buy",
+    body: "Secure Stripe checkout, no account gymnastics. One card, one receipt, done in under a minute.",
+  },
+  {
+    title: "Download",
+    body: "Files appear in your library immediately, behind verified purchase links that expire on their own.",
+  },
+];
+
 function Home() {
   const { data: products } = useSuspenseQuery(featuredQuery);
-  const featured = products.slice(0, 3);
+  const bento = products.slice(0, 6);
+  const spotlights = products.slice(0, 2);
 
   return (
     <div>
-      <section className="relative overflow-hidden border-b border-border">
-        <img
-          src={heroAsset.url}
-          alt=""
-          aria-hidden="true"
-          className="absolute inset-0 h-full w-full object-cover opacity-25"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/85 to-background" />
-        <div className="relative mx-auto max-w-6xl px-4 py-24 sm:py-32">
-          <div className="max-w-2xl">
-            <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground">
-              <Sparkles className="h-3.5 w-3.5 text-brand-ink" />
-              Independent digital workshop
-            </span>
-            <h1 className="mt-6 font-display text-4xl font-bold leading-[1.1] tracking-tight sm:text-6xl">
-              Handcrafted digital tools &amp; assets, forged for people who make things.
+      {/* ---------------- Hero ---------------- */}
+      <section className="relative -mt-20 flex min-h-[100svh] items-end overflow-hidden bg-background pt-32">
+        <HeroBackdrop />
+        <div className="relative mx-auto w-full max-w-[88rem] px-5 pb-20 sm:px-8 sm:pb-28">
+          <Reveal y={16}>
+            <span className="eyebrow text-brand-ink">Independent digital workshop</span>
+          </Reveal>
+          <Reveal delay={0.08}>
+            <h1 className="display-xl mt-6 max-w-[16em]">
+              Handcrafted digital <em className="italic text-brand-ink">tools</em> for people who
+              make things.
             </h1>
-            <p className="mt-6 max-w-xl text-lg text-muted-foreground">
-              Every template, course, app and asset here is built in-house, sold direct, and
-              delivered to your library the moment you buy.
-            </p>
-            <div className="mt-9 flex flex-wrap gap-3">
-              <Link to="/products">
-                <Button size="lg">
-                  Browse the catalog
-                  <ArrowRight />
-                </Button>
-              </Link>
-              <Link to="/products" search={{ category: "templates-printables" }}>
-                <Button variant="subtle" size="lg">
+          </Reveal>
+          <div className="mt-10 flex flex-col gap-8 border-t border-border pt-8 lg:flex-row lg:items-center lg:justify-between">
+            <Reveal delay={0.16}>
+              <p className="max-w-md text-lg text-muted-foreground">
+                Templates, courses, software and design assets — sold direct, delivered the second
+                you buy.
+              </p>
+            </Reveal>
+            <Reveal delay={0.22}>
+              <div className="flex flex-wrap items-center gap-4">
+                <Magnetic>
+                  <Link
+                    to="/products"
+                    className="inline-flex items-center gap-3 rounded-full bg-primary px-8 py-4 text-base font-medium text-primary-foreground"
+                  >
+                    Browse the catalog
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </Magnetic>
+                <Link
+                  to="/products"
+                  search={{ category: "templates-printables" }}
+                  className="text-sm font-medium underline decoration-border decoration-2 underline-offset-8 transition-colors hover:decoration-primary"
+                >
                   Start with templates
-                </Button>
-              </Link>
-            </div>
-
-            <dl className="mt-12 grid gap-6 sm:grid-cols-3">
-              {[
-                { icon: Download, term: "Instant delivery", desc: "Files land in your library." },
-                { icon: ShieldCheck, term: "Gated downloads", desc: "Verified purchases only." },
-                { icon: Sparkles, term: "Made in-house", desc: "No resold marketplace filler." },
-              ].map(({ icon: Icon, term, desc }) => (
-                <div key={term}>
-                  <dt className="flex items-center gap-2 text-sm font-semibold">
-                    <Icon className="h-4 w-4 text-brand-ink" />
-                    {term}
-                  </dt>
-                  <dd className="mt-1 text-sm text-muted-foreground">{desc}</dd>
-                </div>
-              ))}
-            </dl>
+                </Link>
+              </div>
+            </Reveal>
           </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 py-20">
-        <h2 className="font-display text-2xl font-semibold tracking-tight sm:text-3xl">
-          Shop by category
-        </h2>
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {CATEGORIES.map((category) => (
+      <CategoryMarquee />
+
+      {/* ---------------- Bento catalog ---------------- */}
+      <section className="mx-auto max-w-[88rem] px-5 py-24 sm:px-8 sm:py-32">
+        <Reveal>
+          <div className="flex flex-wrap items-end justify-between gap-6">
+            <h2 className="display-lg max-w-xl">Fresh from the forge</h2>
             <Link
-              key={category.slug}
               to="/products"
-              search={{ category: category.slug }}
-              className="group rounded-xl border border-border bg-card p-6 shadow-soft transition-all hover:-translate-y-0.5 hover:shadow-lift"
+              className="group inline-flex items-center gap-2 text-sm font-medium text-brand-ink"
             >
-              <h3 className="font-display text-base font-semibold">{category.label}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">{category.blurb}</p>
-              <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-brand-ink">
-                Explore <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+              View the full catalog
+              <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+            </Link>
+          </div>
+        </Reveal>
+
+        {bento.length > 0 && (
+          <RevealGroup
+            className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+            stagger={0.1}
+          >
+            {bento.map((product, index) => {
+              // Asymmetric rhythm: a wide tile at the head of alternating rows.
+              const large = index % 5 === 0 || index % 5 === 4;
+              return (
+                <RevealItem
+                  key={product.id}
+                  className={cn("flex", large && "lg:col-span-2 sm:col-span-2")}
+                >
+                  <ProductCard product={product} size={large ? "lg" : "sm"} className="w-full" />
+                </RevealItem>
+              );
+            })}
+          </RevealGroup>
+        )}
+      </section>
+
+      {/* ---------------- Spotlights ---------------- */}
+      {spotlights.map((product, index) => (
+        <section
+          key={product.id}
+          className={cn(
+            "overflow-hidden",
+            index % 2 === 0 ? "bg-ink text-ink-foreground" : "bg-surface",
+          )}
+        >
+          <div className="mx-auto grid max-w-[88rem] items-center gap-12 px-5 py-24 sm:px-8 sm:py-32 lg:grid-cols-2 lg:gap-20">
+            <Reveal className={cn(index % 2 === 1 && "lg:order-2")}>
+              <div className="group overflow-hidden rounded-[2rem]">
+                {product.cover_url ? (
+                  <img
+                    src={product.cover_url}
+                    alt={`${product.title} cover`}
+                    loading="lazy"
+                    width={1400}
+                    height={1000}
+                    className="aspect-[5/4] w-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105"
+                  />
+                ) : (
+                  <div className="grid aspect-[5/4] place-items-center bg-muted text-sm">
+                    No cover yet
+                  </div>
+                )}
+              </div>
+            </Reveal>
+
+            <Reveal delay={0.1}>
+              <span
+                className={cn(
+                  "eyebrow",
+                  index % 2 === 0 ? "text-primary" : "text-brand-ink",
+                )}
+              >
+                {index === 0 ? "Bestseller" : "Also worth your time"} — {categoryLabel(product.category)}
               </span>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {featured.length > 0 && (
-        <section className="mx-auto max-w-6xl px-4 pb-8">
-          <div className="flex items-end justify-between gap-4">
-            <h2 className="font-display text-2xl font-semibold tracking-tight sm:text-3xl">
-              Fresh from the forge
-            </h2>
-            <Link
-              to="/products"
-              className="text-sm font-medium text-brand-ink hover:underline"
-            >
-              View all
-            </Link>
-          </div>
-          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {featured.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
+              <h2 className="display-lg mt-5">{product.title}</h2>
+              <p
+                className={cn(
+                  "mt-6 max-w-lg text-lg",
+                  index % 2 === 0 ? "text-ink-muted" : "text-muted-foreground",
+                )}
+              >
+                {product.short_description}
+              </p>
+              <div className="mt-10 flex flex-wrap items-center gap-6">
+                <span className="font-display text-4xl tabular-nums">
+                  {formatPrice(product.price_cents, product.currency)}
+                </span>
+                <Magnetic>
+                  <Link
+                    to="/products/$slug"
+                    params={{ slug: product.slug }}
+                    className="inline-flex items-center gap-3 rounded-full bg-primary px-7 py-4 text-base font-medium text-primary-foreground"
+                  >
+                    View product
+                    <ArrowUpRight className="h-4 w-4" />
+                  </Link>
+                </Magnetic>
+              </div>
+            </Reveal>
           </div>
         </section>
-      )}
+      ))}
+
+      {/* ---------------- Categories ---------------- */}
+      <section className="mx-auto max-w-[88rem] px-5 py-24 sm:px-8 sm:py-32">
+        <Reveal>
+          <h2 className="display-lg max-w-2xl">Four categories, nothing filler.</h2>
+        </Reveal>
+        <RevealGroup className="mt-14 grid gap-px overflow-hidden rounded-3xl border border-border bg-border sm:grid-cols-2">
+          {CATEGORIES.map((category) => (
+            <RevealItem key={category.slug} className="bg-background">
+              <Link
+                to="/products"
+                search={{ category: category.slug }}
+                className="group flex h-full flex-col justify-between gap-8 bg-background p-8 transition-colors hover:bg-surface sm:p-12"
+              >
+                <div>
+                  <h3 className="font-display text-3xl leading-tight sm:text-4xl">
+                    {category.label}
+                  </h3>
+                  <p className="mt-4 max-w-sm text-muted-foreground">{category.blurb}</p>
+                </div>
+                <span className="inline-flex items-center gap-2 text-sm font-medium text-brand-ink">
+                  Explore
+                  <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+                </span>
+              </Link>
+            </RevealItem>
+          ))}
+        </RevealGroup>
+      </section>
+
+      {/* ---------------- How it works ---------------- */}
+      <section className="bg-ink text-ink-foreground">
+        <div className="mx-auto max-w-[88rem] px-5 py-24 sm:px-8 sm:py-36">
+          <Reveal>
+            <span className="eyebrow text-primary">How it works</span>
+            <h2 className="display-lg mt-6 max-w-2xl">
+              Browse, buy, download — <em className="italic">instantly</em>.
+            </h2>
+          </Reveal>
+
+          <RevealGroup className="mt-20 grid gap-16 lg:grid-cols-3 lg:gap-12" stagger={0.14}>
+            {STEPS.map((step, index) => (
+              <RevealItem key={step.title}>
+                <div className="border-t border-ink-foreground/20 pt-8">
+                  <span className="font-display text-6xl text-primary sm:text-7xl">
+                    0{index + 1}
+                  </span>
+                  <h3 className="mt-8 font-display text-3xl">{step.title}</h3>
+                  <p className="mt-4 max-w-sm text-ink-muted">{step.body}</p>
+                </div>
+              </RevealItem>
+            ))}
+          </RevealGroup>
+        </div>
+      </section>
+
+      {/* ---------------- Stats band ---------------- */}
+      <section className="border-b border-border bg-surface">
+        <RevealGroup
+          className="mx-auto grid max-w-[88rem] gap-12 px-5 py-20 sm:grid-cols-3 sm:px-8 sm:py-28"
+          stagger={0.12}
+        >
+          {[
+            { to: 500, suffix: "+", label: "Creators in the workshop" },
+            { to: 10000, suffix: "+", label: "Files downloaded" },
+            { to: 4, suffix: ".9", label: "Average product rating" },
+          ].map((stat) => (
+            <RevealItem key={stat.label}>
+              <CountUp
+                to={stat.to}
+                suffix={stat.suffix}
+                className="block font-display text-6xl tracking-tight tabular-nums sm:text-7xl"
+              />
+              <p className="mt-4 text-sm text-muted-foreground">{stat.label}</p>
+            </RevealItem>
+          ))}
+        </RevealGroup>
+      </section>
     </div>
   );
 }

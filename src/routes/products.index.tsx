@@ -6,6 +6,7 @@ import { Reveal, RevealGroup, RevealItem } from "@/components/motion/reveal";
 import { ProductCard } from "@/components/site/product-card";
 import { CATEGORIES, categoryLabel } from "@/lib/catalog";
 import { listProducts } from "@/lib/products.functions";
+import { ProductGridSkeleton } from "@/components/site/product-skeleton";
 import { cn } from "@/lib/utils";
 
 const searchSchema = z.object({ category: z.string().optional() });
@@ -35,8 +36,21 @@ export const Route = createFileRoute("/products/")({
       },
     ],
   }),
+  pendingComponent: ProductsPending,
   component: ProductsPage,
 });
+
+function ProductsPending() {
+  return (
+    <div className="mx-auto max-w-[88rem] px-5 py-16 sm:px-8">
+      <div className="skeleton h-4 w-28 rounded-full" />
+      <div className="skeleton mt-6 h-16 w-full max-w-2xl" />
+      <div className="mt-12">
+        <ProductGridSkeleton count={4} />
+      </div>
+    </div>
+  );
+}
 
 function ProductsPage() {
   const { category } = Route.useSearch();
@@ -108,7 +122,7 @@ function FilterLink({
       to="/products"
       search={slug ? { category: slug } : {}}
       className={cn(
-        "rounded-full border px-5 py-2 text-sm transition-colors",
+        "inline-flex min-h-11 items-center rounded-full border px-5 text-sm transition-colors",
         active
           ? "border-primary bg-primary text-primary-foreground"
           : "border-border bg-card text-muted-foreground hover:text-foreground",

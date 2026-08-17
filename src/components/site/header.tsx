@@ -62,10 +62,11 @@ export function SiteHeader() {
       transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
       className={cn(
         "fixed inset-x-0 top-0 z-50 transition-colors duration-500",
-        solid
-          ? "border-b border-border bg-background/80 backdrop-blur-xl"
+        solid || open
+          ? "border-b border-border bg-background"
           : "border-b border-transparent bg-transparent",
       )}
+
     >
       <div className="mx-auto flex h-20 max-w-[88rem] items-center justify-between gap-6 px-5 sm:px-8">
         <Link to="/" className="flex min-w-0 items-center gap-3">
@@ -148,10 +149,15 @@ export function SiteHeader() {
       </div>
 
       {open && (
-        <div className="border-t border-border bg-background px-5 py-4 lg:hidden">
-          <div className="flex flex-col gap-1">
-            <Link to="/products" onClick={() => setOpen(false)} className="py-2 font-display text-2xl">
-              Catalog
+        <div className="h-[calc(100svh-5rem)] overflow-y-auto border-t border-border bg-background px-5 pb-10 pt-6 lg:hidden">
+          <span className="eyebrow text-muted-foreground">Catalog</span>
+          <div className="mt-4 flex flex-col">
+            <Link
+              to="/products"
+              onClick={() => setOpen(false)}
+              className="flex min-h-14 items-center border-b border-border font-display text-3xl tracking-tight"
+            >
+              Everything
             </Link>
             {CATEGORIES.map((category) => (
               <Link
@@ -159,41 +165,48 @@ export function SiteHeader() {
                 to="/products"
                 search={{ category: category.slug }}
                 onClick={() => setOpen(false)}
-                className="py-2 text-sm text-muted-foreground"
+                className="flex min-h-14 items-center border-b border-border font-display text-3xl tracking-tight"
               >
-                {category.label}
+                {category.label.split(" & ")[0]}
               </Link>
             ))}
-            <div className="mt-3 flex gap-2">
-              {user ? (
-                <>
-                  <Link to="/library" onClick={() => setOpen(false)} className="flex-1">
-                    <Button variant="subtle" size="sm" className="w-full rounded-full">
-                      Library
-                    </Button>
-                  </Link>
-                  {admin?.isAdmin && (
-                    <Link to="/admin" onClick={() => setOpen(false)} className="flex-1">
-                      <Button variant="subtle" size="sm" className="w-full rounded-full">
-                        Seller
-                      </Button>
-                    </Link>
-                  )}
-                  <Button variant="outline" size="sm" className="rounded-full" onClick={signOut}>
-                    Sign out
-                  </Button>
-                </>
-              ) : (
-                <Link to="/auth" onClick={() => setOpen(false)} className="flex-1">
-                  <Button size="sm" className="w-full rounded-full">
-                    Sign in
+          </div>
+
+          <div className="mt-8 flex flex-col gap-3">
+            {user ? (
+              <>
+                <Link to="/library" onClick={() => setOpen(false)}>
+                  <Button variant="subtle" size="lg" className="w-full rounded-full">
+                    My library
                   </Button>
                 </Link>
-              )}
-            </div>
+                {admin?.isAdmin && (
+                  <Link to="/admin" onClick={() => setOpen(false)}>
+                    <Button variant="subtle" size="lg" className="w-full rounded-full">
+                      Seller area
+                    </Button>
+                  </Link>
+                )}
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="w-full rounded-full"
+                  onClick={signOut}
+                >
+                  Sign out
+                </Button>
+              </>
+            ) : (
+              <Link to="/auth" onClick={() => setOpen(false)}>
+                <Button size="lg" className="w-full rounded-full">
+                  Sign in
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
       )}
+
 
       {/* keeps the hero readable while the bar is transparent */}
       {overHero && (

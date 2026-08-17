@@ -10,7 +10,11 @@ import { CategoryMarquee } from "@/components/site/marquee";
 import { ProductCard } from "@/components/site/product-card";
 import { CATEGORIES, formatPrice, categoryLabel } from "@/lib/catalog";
 import { listProducts } from "@/lib/products.functions";
+import { ProductGridSkeleton } from "@/components/site/product-skeleton";
 import { cn } from "@/lib/utils";
+
+/** Stable production host — used only for absolute social-share image URLs. */
+const SITE_URL = "https://project--69a76b6b-0891-4c75-85e0-5cd4159733bf.lovable.app";
 
 const featuredQuery = queryOptions({
   queryKey: ["products", "all"],
@@ -32,10 +36,31 @@ export const Route = createFileRoute("/")({
         property: "og:description",
         content: "Templates, courses, apps and design assets, delivered instantly.",
       },
+      {
+        property: "og:image",
+        content: `${SITE_URL}/og-image.jpg`,
+      },
+      { name: "twitter:image", content: `${SITE_URL}/og-image.jpg` },
+      { property: "og:url", content: "/" },
     ],
+    links: [{ rel: "canonical", href: "/" }],
   }),
+  pendingComponent: HomePending,
   component: Home,
 });
+
+function HomePending() {
+  return (
+    <div className="mx-auto max-w-[88rem] px-5 py-24 sm:px-8 sm:py-32">
+      <div className="skeleton h-4 w-40 rounded-full" />
+      <div className="skeleton mt-8 h-24 w-full max-w-4xl" />
+      <div className="skeleton mt-4 h-24 w-full max-w-2xl" />
+      <div className="mt-20">
+        <ProductGridSkeleton count={3} />
+      </div>
+    </div>
+  );
+}
 
 const STEPS = [
   {
@@ -152,7 +177,7 @@ function Home() {
         >
           <div className="mx-auto grid max-w-[88rem] items-center gap-12 px-5 py-24 sm:px-8 sm:py-32 lg:grid-cols-2 lg:gap-20">
             <Reveal className={cn(index % 2 === 1 && "lg:order-2")}>
-              <div className="group overflow-hidden rounded-[2rem]">
+              <div className="art-frame group rounded-tl-[3rem]">
                 {product.cover_url ? (
                   <img
                     src={product.cover_url}
@@ -237,6 +262,24 @@ function Home() {
         </RevealGroup>
       </section>
 
+      {/* ---------------- Pull quote ---------------- */}
+      <section className="border-y border-border bg-surface">
+        <div className="mx-auto max-w-[88rem] px-5 py-24 sm:px-8 sm:py-32">
+          <Reveal className="grid gap-10 lg:grid-cols-12">
+            <span className="eyebrow text-muted-foreground lg:col-span-3">From the workshop</span>
+            <blockquote className="lg:col-span-9">
+              <p className="pull-quote max-w-4xl">
+                “A good template should feel like it was made for one person, then quietly shared
+                with everyone else.”
+              </p>
+              <footer className="mt-10 text-sm text-muted-foreground">
+                Abdelilah Karroumi — founder, Forge Digital
+              </footer>
+            </blockquote>
+          </Reveal>
+        </div>
+      </section>
+
       {/* ---------------- How it works ---------------- */}
       <section className="bg-ink text-ink-foreground">
         <div className="mx-auto max-w-[88rem] px-5 py-24 sm:px-8 sm:py-36">
@@ -266,13 +309,14 @@ function Home() {
       {/* ---------------- Stats band ---------------- */}
       <section className="border-b border-border bg-surface">
         <RevealGroup
-          className="mx-auto grid max-w-[88rem] gap-12 px-5 py-20 sm:grid-cols-3 sm:px-8 sm:py-28"
+          className="mx-auto grid max-w-[88rem] gap-12 px-5 py-20 sm:grid-cols-2 sm:px-8 sm:py-28 lg:grid-cols-4"
           stagger={0.12}
         >
           {[
             { to: 500, suffix: "+", label: "Creators in the workshop" },
             { to: 10000, suffix: "+", label: "Files downloaded" },
             { to: 4, suffix: ".9", label: "Average product rating" },
+            { to: 12, suffix: " yrs", label: "Making tools for makers" },
           ].map((stat) => (
             <RevealItem key={stat.label}>
               <CountUp

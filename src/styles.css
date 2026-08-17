@@ -162,7 +162,7 @@
   font-weight: 600;
   line-height: 0.9;
   letter-spacing: -0.04em;
-  font-size: clamp(3rem, 10.5vw, 8.75rem);
+  font-size: clamp(2.5rem, 10.5vw, 8.75rem);
 }
 
 @utility display-lg {
@@ -170,7 +170,7 @@
   font-weight: 600;
   line-height: 0.94;
   letter-spacing: -0.035em;
-  font-size: clamp(2.25rem, 6.5vw, 5rem);
+  font-size: clamp(2rem, 6.5vw, 5rem);
 }
 
 @utility eyebrow {

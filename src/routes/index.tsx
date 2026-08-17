@@ -85,7 +85,7 @@ function Home() {
   return (
     <div>
       {/* ---------------- Hero ---------------- */}
-      <section className="relative -mt-20 flex min-h-[100svh] items-end overflow-hidden bg-background pt-32">
+      <section className="relative -mt-20 flex min-h-[88svh] items-end overflow-hidden bg-background pt-32">
         <HeroBackdrop />
         <div className="relative mx-auto w-full max-w-[88rem] px-5 pb-20 sm:px-8 sm:pb-28">
           <Reveal y={16}>

@@ -98,7 +98,7 @@ export function SiteHeader() {
 
         <div className="flex items-center gap-2">
           <Link to="/cart" className="relative" aria-label="Cart">
-            <Button variant="ghost" size="icon" className="rounded-full">
+            <Button variant="ghost" size="icon" className="h-11 w-11 rounded-full">
               <ShoppingBag />
             </Button>
             {items.length > 0 && (
@@ -139,7 +139,7 @@ export function SiteHeader() {
           <Button
             variant="ghost"
             size="icon"
-            className="rounded-full lg:hidden"
+            className="h-11 w-11 rounded-full lg:hidden"
             aria-label="Menu"
             onClick={() => setOpen((v) => !v)}
           >

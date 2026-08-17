@@ -23,8 +23,8 @@ export const createCheckoutSession = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     if (!products || products.length === 0) throw new Error("No purchasable products selected.");
 
-    const { stripePost, type: _t } = { stripePost: (await import("./stripe.server")).stripePost };
-    void _t;
+    const { stripePost } = await import("./stripe.server");
+
 
     const params: Record<string, string | number> = {
       mode: "payment",

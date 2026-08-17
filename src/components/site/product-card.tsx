@@ -3,6 +3,7 @@ import { ArrowUpRight } from "lucide-react";
 
 import { categoryLabel, formatPrice, type Product } from "@/lib/catalog";
 import { cn } from "@/lib/utils";
+import { ForgeSpark } from "@/components/brand/spark";
 
 export function ProductCard({
   product,
@@ -49,7 +50,10 @@ export function ProductCard({
         <div className="flex items-center gap-3 text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
           <span>{categoryLabel(product.category)}</span>
           {product.is_sample && (
-            <span className="border-l border-border pl-3 text-brand-ink">Sample</span>
+            <span className="inline-flex items-center gap-1.5 border-l border-border pl-3 text-brand-ink">
+              <ForgeSpark className="h-2.5 w-2.5" ember={false} />
+              Sample
+            </span>
           )}
         </div>
 

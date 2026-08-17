@@ -58,7 +58,9 @@ function ProductDetail() {
   const { slug } = Route.useParams();
   const { data: product } = useSuspenseQuery(productQuery(slug));
   const { add, has } = useCart();
-  const gallery = [product.cover_url, ...product.preview_urls].filter(Boolean) as string[];
+  const gallery = Array.from(
+    new Set([product.cover_url, ...product.preview_urls].filter(Boolean) as string[]),
+  );
   const [active, setActive] = useState(0);
   const inCart = has(product.id);
 

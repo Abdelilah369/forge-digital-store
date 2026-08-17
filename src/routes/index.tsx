@@ -266,7 +266,7 @@ function Home() {
                 </div>
                 <span className="inline-flex items-center gap-2 text-sm font-medium text-brand-ink">
                   <ForgeSpark className="h-3 w-3" ember={false} />
-                  Browse {category.label.split(" & ")[0].toLowerCase()}
+                  Browse {(category.label.split(" & ")[0] ?? category.label).toLowerCase()}
                   <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
                 </span>
               </Link>

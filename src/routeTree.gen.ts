@@ -17,6 +17,8 @@ import { Route as AuthenticatedLibraryRouteImport } from './routes/_authenticate
 import { Route as CheckoutSuccessRouteImport } from './routes/checkout.success'
 import { Route as ProductsIndexRouteImport } from './routes/products.index'
 import { Route as ProductsSlugRouteImport } from './routes/products.$slug'
+import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
+import { Route as AuthenticatedAdminProductIdRouteImport } from './routes/_authenticated/admin.$productId'
 import { Route as ApiPublicCoverSplatRouteImport } from './routes/api/public/cover.$'
 import { Route as ApiPublicWebhooksStripeRouteImport } from './routes/api/public/webhooks/stripe'
 
@@ -59,6 +61,17 @@ const ProductsSlugRoute = ProductsSlugRouteImport.update({
   path: '/products/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAdminProductIdRoute =
+  AuthenticatedAdminProductIdRouteImport.update({
+    id: '/admin/$productId',
+    path: '/admin/$productId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const ApiPublicCoverSplatRoute = ApiPublicCoverSplatRouteImport.update({
   id: '/api/public/cover/$',
   path: '/api/public/cover/$',
@@ -78,6 +91,8 @@ export interface FileRoutesByFullPath {
   '/checkout/success': typeof CheckoutSuccessRoute
   '/products/$slug': typeof ProductsSlugRoute
   '/products/': typeof ProductsIndexRoute
+  '/admin/$productId': typeof AuthenticatedAdminProductIdRoute
+  '/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/cover/$': typeof ApiPublicCoverSplatRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
 }
@@ -89,6 +104,8 @@ export interface FileRoutesByTo {
   '/checkout/success': typeof CheckoutSuccessRoute
   '/products/$slug': typeof ProductsSlugRoute
   '/products': typeof ProductsIndexRoute
+  '/admin/$productId': typeof AuthenticatedAdminProductIdRoute
+  '/admin': typeof AuthenticatedAdminIndexRoute
   '/api/public/cover/$': typeof ApiPublicCoverSplatRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
 }
@@ -102,6 +119,8 @@ export interface FileRoutesById {
   '/checkout/success': typeof CheckoutSuccessRoute
   '/products/$slug': typeof ProductsSlugRoute
   '/products/': typeof ProductsIndexRoute
+  '/_authenticated/admin/$productId': typeof AuthenticatedAdminProductIdRoute
+  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/cover/$': typeof ApiPublicCoverSplatRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
 }
@@ -115,6 +134,8 @@ export interface FileRouteTypes {
     | '/checkout/success'
     | '/products/$slug'
     | '/products/'
+    | '/admin/$productId'
+    | '/admin/'
     | '/api/public/cover/$'
     | '/api/public/webhooks/stripe'
   fileRoutesByTo: FileRoutesByTo
@@ -126,6 +147,8 @@ export interface FileRouteTypes {
     | '/checkout/success'
     | '/products/$slug'
     | '/products'
+    | '/admin/$productId'
+    | '/admin'
     | '/api/public/cover/$'
     | '/api/public/webhooks/stripe'
   id:
@@ -138,6 +161,8 @@ export interface FileRouteTypes {
     | '/checkout/success'
     | '/products/$slug'
     | '/products/'
+    | '/_authenticated/admin/$productId'
+    | '/_authenticated/admin/'
     | '/api/public/cover/$'
     | '/api/public/webhooks/stripe'
   fileRoutesById: FileRoutesById
@@ -212,6 +237,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/admin/': {
+      id: '/_authenticated/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin/$productId': {
+      id: '/_authenticated/admin/$productId'
+      path: '/admin/$productId'
+      fullPath: '/admin/$productId'
+      preLoaderRoute: typeof AuthenticatedAdminProductIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/api/public/cover/$': {
       id: '/api/public/cover/$'
       path: '/api/public/cover/$'
@@ -231,10 +270,14 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedLibraryRoute: typeof AuthenticatedLibraryRoute
+  AuthenticatedAdminProductIdRoute: typeof AuthenticatedAdminProductIdRoute
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedLibraryRoute: AuthenticatedLibraryRoute,
+  AuthenticatedAdminProductIdRoute: AuthenticatedAdminProductIdRoute,
+  AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

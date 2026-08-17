@@ -57,7 +57,7 @@ function ProductMissing() {
 function ProductDetail() {
   const { slug } = Route.useParams();
   const { data: product } = useSuspenseQuery(productQuery(slug));
-  const { addItem, has } = useCart();
+  const { add, has } = useCart();
   const gallery = [product.cover_url, ...product.preview_urls].filter(Boolean) as string[];
   const [active, setActive] = useState(0);
   const inCart = has(product.id);
@@ -130,7 +130,7 @@ function ProductDetail() {
             <Button
               size="lg"
               onClick={() => {
-                addItem(product);
+                add(product);
                 toast.success(inCart ? "Already in your cart" : `${product.title} added to cart`);
               }}
             >
@@ -140,7 +140,7 @@ function ProductDetail() {
             <Link
               to="/cart"
               onClick={() => {
-                if (!inCart) addItem(product);
+                if (!inCart) add(product);
               }}
             >
               <Button variant="subtle" size="lg">

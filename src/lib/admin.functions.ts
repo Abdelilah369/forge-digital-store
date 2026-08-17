@@ -82,10 +82,12 @@ export const saveProduct = createServerFn({ method: "POST" })
     await assertAdmin(context.supabase, context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    const row = { ...data, currency: "usd" };
-    const { data: saved, error } = data.id
-      ? await supabaseAdmin.from("products").update(row).eq("id", data.id).select("id, slug").single()
+    const { id, ...fields } = data;
+    const row = { ...fields, currency: "usd" };
+    const { data: saved, error } = id
+      ? await supabaseAdmin.from("products").update(row).eq("id", id).select("id, slug").single()
       : await supabaseAdmin.from("products").insert(row).select("id, slug").single();
+
 
     if (error) throw new Error(error.message);
     return saved;

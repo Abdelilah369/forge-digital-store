@@ -162,7 +162,7 @@
   font-weight: 600;
   line-height: 0.9;
   letter-spacing: -0.04em;
-  font-size: clamp(3rem, 10.5vw, 8.75rem);
+  font-size: clamp(2.5rem, 10.5vw, 8.75rem);
 }
 
 @utility display-lg {
@@ -170,7 +170,7 @@
   font-weight: 600;
   line-height: 0.94;
   letter-spacing: -0.035em;
-  font-size: clamp(2.25rem, 6.5vw, 5rem);
+  font-size: clamp(2rem, 6.5vw, 5rem);
 }
 
 @utility eyebrow {
@@ -319,5 +319,118 @@
   *::before,
   *::after {
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---------- Focus-visible: one consistent, visible treatment ---------- */
+
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  .has-custom-cursor a:focus-visible,
+  .has-custom-cursor button:focus-visible {
+    cursor: auto;
+  }
+}
+
+/* ---------- Editorial pull-quote (Kinfolk/Cereal) ---------- */
+
+@utility pull-quote {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  font-size: clamp(1.75rem, 4.6vw, 3.75rem);
+  text-wrap: balance;
+}
+
+/* ---------- Art direction for product imagery ---------- */
+/* Warm duotone + fine grain so placeholder renders read as art-directed. */
+
+.art-frame {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--surface);
+}
+
+.art-frame img {
+  filter: grayscale(1) contrast(1.06) brightness(1.02);
+}
+
+.art-frame::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--primary) 30%, transparent),
+    color-mix(in oklab, var(--ink) 34%, transparent)
+  );
+  mix-blend-mode: color;
+}
+
+.art-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0.14;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23g)'/%3E%3C/svg%3E");
+}
+
+/* ---------- Skeleton placeholders ---------- */
+
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background-color: color-mix(in oklab, var(--foreground) 7%, transparent);
+}
+
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in oklab, var(--foreground) 6%, transparent),
+    transparent
+  );
+  animation: skeleton-sweep 1.4s ease-in-out infinite;
+}
+
+@keyframes skeleton-sweep {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/* ---------- Mobile: simplify motion-heavy pieces ---------- */
+
+@media (max-width: 767px) {
+  .mesh-blob {
+    animation: none;
+    filter: blur(46px);
+    opacity: 0.7;
+  }
+
+  .marquee-track {
+    animation-duration: 52s;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton::after {
+    animation: none;
   }
 }

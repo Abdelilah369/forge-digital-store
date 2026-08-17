@@ -21,17 +21,14 @@ export function ProductCard({
       to="/products/$slug"
       params={{ slug: product.slug }}
       className={cn(
-        "group relative flex flex-col overflow-hidden rounded-3xl border border-border bg-card transition-shadow duration-500 hover:shadow-lift",
+        // Corner treatment is deliberately uneven: one soft corner, three square.
+        "group relative flex flex-col overflow-hidden border border-border bg-card transition-colors duration-500 hover:border-foreground",
+        large ? "rounded-tl-[2.5rem]" : "rounded-br-[1.75rem]",
         large && "lg:col-span-2",
         className,
       )}
     >
-      <div
-        className={cn(
-          "overflow-hidden bg-surface",
-          large ? "aspect-[16/10]" : "aspect-[4/3]",
-        )}
-      >
+      <div className={cn("art-frame", large ? "aspect-[16/10]" : "aspect-[4/3]")}>
         {product.cover_url ? (
           <img
             src={product.cover_url}
@@ -39,7 +36,7 @@ export function ProductCard({
             loading="lazy"
             width={1400}
             height={900}
-            className="h-full w-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06]"
+            className="h-full w-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]"
           />
         ) : (
           <div className="grid h-full place-items-center text-sm text-muted-foreground">
@@ -48,11 +45,11 @@ export function ProductCard({
         )}
       </div>
 
-      <div className={cn("flex flex-1 flex-col gap-3 p-6", large && "sm:p-8")}>
+      <div className={cn("flex flex-1 flex-col gap-3 p-5 sm:p-6", large && "sm:p-8")}>
         <div className="flex items-center gap-3 text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
           <span>{categoryLabel(product.category)}</span>
           {product.is_sample && (
-            <span className="rounded-full border border-border px-2 py-0.5">Sample</span>
+            <span className="border-l border-border pl-3 text-brand-ink">Sample</span>
           )}
         </div>
 
@@ -74,11 +71,11 @@ export function ProductCard({
           {product.short_description}
         </p>
 
-        <div className="mt-auto flex items-center justify-between pt-4">
+        <div className="mt-auto flex items-center justify-between border-t border-border pt-4">
           <span className="text-lg font-semibold tabular-nums">
             {formatPrice(product.price_cents, product.currency)}
           </span>
-          <span className="grid h-10 w-10 place-items-center rounded-full border border-border text-foreground transition-all duration-500 group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground">
+          <span className="grid h-11 w-11 place-items-center rounded-full border border-border text-foreground transition-colors duration-500 group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground">
             <ArrowUpRight className="h-4 w-4" />
           </span>
         </div>

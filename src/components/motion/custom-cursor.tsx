@@ -1,73 +1,65 @@
-import { useEffect, useState } from "react";
+"use client";
+
+import { useEffect, useRef } from "react";
 
 /**
- * Small dot cursor that scales up over interactive elements.
- * Desktop (fine pointer) only, and skipped for prefers-reduced-motion.
+ * Ultra-high-performance Ambient Glow Cursor.
+ * Uses hardware-accelerated translate3d without hiding the native OS cursor,
+ * giving the stunning luxury aesthetic with ZERO mouse input lag.
  */
-export function CustomCursor() {
-  const [enabled, setEnabled] = useState(false);
-  const [active, setActive] = useState(false);
-  const [visible, setVisible] = useState(false);
+export function AmbientCursorGlow() {
+  const dotRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const fine = window.matchMedia("(pointer: fine)").matches;
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (!fine || reduced) return;
-    setEnabled(true);
+    // Only run on fine-pointer devices (desktops/laptops with real mouse)
+    if (typeof window === "undefined" || !window.matchMedia("(pointer: fine)").matches) {
+      return;
+    }
 
-    const dot = document.createElement("div");
-    dot.className = "cursor-dot";
-    document.body.appendChild(dot);
-    document.documentElement.classList.add("has-custom-cursor");
+    const dot = dotRef.current;
+    if (!dot) return;
 
-    let raf = 0;
-    let tx = window.innerWidth / 2;
-    let ty = window.innerHeight / 2;
-    let cx = tx;
-    let cy = ty;
+    let targetX = -100;
+    let targetY = -100;
+    let currentX = -100;
+    let currentY = -100;
+    let rafId: number;
 
-    const loop = () => {
-      cx += (tx - cx) * 0.22;
-      cy += (ty - cy) * 0.22;
-      dot.style.transform = `translate3d(${cx}px, ${cy}px, 0) translate(-50%, -50%)`;
-      raf = requestAnimationFrame(loop);
+    const onMouseMove = (e: MouseEvent) => {
+      targetX = e.clientX;
+      targetY = e.clientY;
+      dot.style.opacity = "1";
     };
-    raf = requestAnimationFrame(loop);
 
-    const onMove = (event: MouseEvent) => {
-      tx = event.clientX;
-      ty = event.clientY;
-      setVisible(true);
-      const target = event.target as HTMLElement | null;
-      setActive(
-        Boolean(
-          target?.closest(
-            'a, button, [role="button"], input, select, textarea, [data-cursor="hover"]',
-          ),
-        ),
-      );
+    const onMouseLeave = () => {
+      dot.style.opacity = "0";
     };
-    const onLeave = () => setVisible(false);
 
-    window.addEventListener("mousemove", onMove);
-    window.addEventListener("mouseout", onLeave);
+    const render = () => {
+      // Smooth lerp (0.18 gives snappy but fluid trailing)
+      currentX += (targetX - currentX) * 0.18;
+      currentY += (targetY - currentY) * 0.18;
+
+      dot.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
+      rafId = requestAnimationFrame(render);
+    };
+
+    window.addEventListener("mousemove", onMouseMove, { passive: true });
+    document.addEventListener("mouseleave", onMouseLeave, { passive: true });
+    rafId = requestAnimationFrame(render);
 
     return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("mouseout", onLeave);
-      document.documentElement.classList.remove("has-custom-cursor");
-      dot.remove();
+      window.removeEventListener("mousemove", onMouseMove);
+      document.removeEventListener("mouseleave", onMouseLeave);
+      cancelAnimationFrame(rafId);
     };
   }, []);
 
-  useEffect(() => {
-    if (!enabled) return;
-    const dot = document.querySelector<HTMLElement>(".cursor-dot");
-    if (!dot) return;
-    dot.dataset["active"] = active ? "true" : "false";
-    dot.style.opacity = visible ? "1" : "0";
-  }, [enabled, active, visible]);
-
-  return null;
+  return (
+    <div
+      ref={dotRef}
+      aria-hidden="true"
+      className="pointer-events-none fixed top-0 left-0 z-40 -ml-4 -mt-4 h-8 w-8 rounded-full bg-primary/20 blur-md transition-opacity duration-300 will-change-transform opacity-0"
+    />
+  );
 }

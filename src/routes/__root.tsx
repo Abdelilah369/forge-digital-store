@@ -15,8 +15,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteHeader } from "@/components/site/header";
 import { SiteFooter } from "@/components/site/footer";
-import { CustomCursor } from "@/components/motion/custom-cursor";
-import { SmoothScroll } from "@/components/motion/smooth-scroll";
+import { AmbientCursorGlow } from "@/components/motion/custom-cursor";
 import { Toaster } from "@/components/ui/sonner";
 import { CartProvider } from "@/lib/cart";
 import { supabase } from "@/integrations/supabase/client";
@@ -157,6 +156,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <CartProvider>
+        <AmbientCursorGlow />
         <div className="flex min-h-screen flex-col">
           <SiteHeader />
           <main className="flex-1 pt-20">
@@ -175,6 +175,7 @@ function RootComponent() {
           </main>
           <SiteFooter />
         </div>
+        <div className="grain-overlay pointer-events-none fixed inset-0 z-50 opacity-[0.03]" aria-hidden="true" />
         <Toaster />
       </CartProvider>
     </QueryClientProvider>

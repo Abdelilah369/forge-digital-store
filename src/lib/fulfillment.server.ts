@@ -11,9 +11,10 @@ export async function fulfillSession(session: any) {
   }
 
   const userId = session.client_reference_id;
-  const productIds = (session.metadata?.["product_ids"] ?? "")
+  const metadata = session.metadata || {};
+  const productIds = (metadata.product_ids || metadata["product_ids"] || "")
     .split(",")
-    .map((id) => id.trim())
+    .map((id: string) => id.trim())
     .filter(Boolean);
 
   if (!userId || productIds.length === 0) {
@@ -65,7 +66,7 @@ export async function fulfillSession(session: any) {
   }
 
   const { error: purchaseError } = await supabaseAdmin.from("purchases").upsert(
-    productIds.map((productId) => ({
+    productIds.map((productId: string) => ({
       user_id: userId,
       product_id: productId,
       order_id: order?.id ?? null,

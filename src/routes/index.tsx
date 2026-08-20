@@ -96,14 +96,9 @@ function Home() {
             </span>
           </Reveal>
           <Reveal delay={0.08}>
-            <div className="flex flex-col gap-4">
-              <p className="max-w-2xl text-xs font-mono text-muted-foreground/50 leading-relaxed uppercase tracking-widest">
-                Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.
-              </p>
-              <h1 className="display-xl max-w-[16em]">
-                i want to puch my website to my github account
-              </h1>
-            </div>
+            <h1 className="display-xl max-w-[16em]">
+              Digital tools built with craft. <em className="italic font-normal">Ready in minutes.</em>
+            </h1>
           </Reveal>
           <div className="mt-10 flex flex-col gap-8 border-t border-border pt-8 lg:flex-row lg:items-center lg:justify-between">
             <Reveal delay={0.16}>

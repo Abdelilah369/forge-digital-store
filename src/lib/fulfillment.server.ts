@@ -5,13 +5,13 @@ import type { StripeCheckoutSession } from "./stripe.server";
  * Grants download entitlements for a paid Stripe Checkout session.
  * Idempotent: safe to run from both the webhook and the success page.
  */
-export async function fulfillSession(session: StripeCheckoutSession) {
+export async function fulfillSession(session: any) {
   if (session.payment_status !== "paid") {
     return { fulfilled: false as const, reason: "unpaid" };
   }
 
   const userId = session.client_reference_id;
-  const productIds = (session.metadata?.product_ids || session.metadata?.["product_ids"] || "")
+  const productIds = (session.metadata?.["product_ids"] ?? "")
     .split(",")
     .map((id) => id.trim())
     .filter(Boolean);

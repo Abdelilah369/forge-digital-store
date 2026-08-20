@@ -29,8 +29,16 @@ export const Route = createFileRoute("/api/public/webhooks/stripe")({
         const signature = request.headers.get("stripe-signature");
         const payload = await request.text();
 
-        if (!secret) return new Response("Webhook secret not configured", { status: 500 });
+        if (!secret) {
+          console.warn("[Stripe Webhook] Webhook secret not configured. Returning 200 for local development stability.");
+          return new Response(JSON.stringify({ warning: "Webhook secret not configured" }), { 
+            status: 200, 
+            headers: { "content-type": "application/json" } 
+          });
+        }
+        
         if (!signature || !verifyStripeSignature(payload, signature, secret)) {
+          console.error("[Stripe Webhook] Invalid signature");
           return new Response("Invalid signature", { status: 401 });
         }
 
@@ -42,7 +50,16 @@ export const Route = createFileRoute("/api/public/webhooks/stripe")({
         if (event.type === "checkout.session.completed") {
           const { fulfillSession } = await import("@/lib/fulfillment.server");
           type Session = import("@/lib/stripe.server").StripeCheckoutSession;
-          await fulfillSession(event.data.object as unknown as Session);
+          try {
+            const result = await fulfillSession(event.data.object as unknown as Session);
+            console.log("[Stripe Webhook] Fulfillment result:", result);
+          } catch (err) {
+            console.error("[Stripe Webhook] Fulfillment error:", err);
+            return new Response(
+              JSON.stringify({ error: err instanceof Error ? err.message : "Fulfillment failed" }),
+              { status: 500, headers: { "content-type": "application/json" } }
+            );
+          }
         }
 
         return new Response(JSON.stringify({ received: true }), {

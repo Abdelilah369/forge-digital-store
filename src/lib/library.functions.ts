@@ -54,7 +54,7 @@ export const listMyLibrary = createServerFn({ method: "GET" })
 
 export const createDownloadLink = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) => z.object({ productId: z.string().uuid() }).parse(data))
+  .validator((data: unknown) => z.object({ productId: z.string().uuid() }).parse(data))
   .handler(async ({ data, context }) => {
     // Entitlement check runs as the signed-in user, under RLS.
     const { data: purchase, error } = await context.supabase
@@ -62,8 +62,17 @@ export const createDownloadLink = createServerFn({ method: "POST" })
       .select("id")
       .eq("product_id", data.productId)
       .maybeSingle();
-    if (error) throw new Error(error.message);
-    if (!purchase) throw new Error("You don't own this product yet.");
+
+    if (error) {
+      console.error("[createDownloadLink] Database error:", error);
+      throw new Error("Could not verify ownership.");
+    }
+    
+    if (!purchase) {
+      // In development, we might not have the purchase record yet if Stripe secrets aren't set
+      // but let's be strict for now as that's what the user asked to resolve.
+      throw new Error("You don't own this product yet.");
+    }
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: product } = await supabaseAdmin

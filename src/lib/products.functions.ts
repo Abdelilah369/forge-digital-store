@@ -6,7 +6,7 @@ import type { Product } from "./catalog";
 const listInput = z.object({ category: z.string().optional() });
 
 export const listProducts = createServerFn({ method: "GET" })
-  .inputValidator((data: unknown) => listInput.parse(data ?? {}))
+  .validator((data: unknown) => listInput.parse(data ?? {}))
   .handler(async ({ data }): Promise<Product[]> => {
     const { createPublicServerClient, PUBLIC_PRODUCT_COLUMNS } = await import(
       "./supabase-public.server"
@@ -27,7 +27,7 @@ export const listProducts = createServerFn({ method: "GET" })
   });
 
 export const getProduct = createServerFn({ method: "GET" })
-  .inputValidator((data: unknown) => z.object({ slug: z.string().min(1) }).parse(data))
+  .validator((data: unknown) => z.object({ slug: z.string().min(1) }).parse(data))
   .handler(async ({ data }): Promise<Product | null> => {
     const { createPublicServerClient, PUBLIC_PRODUCT_COLUMNS } = await import(
       "./supabase-public.server"

@@ -77,7 +77,7 @@ const productInput = z.object({
 
 export const saveProduct = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) => productInput.parse(data))
+  .validator((data: unknown) => productInput.parse(data))
   .handler(async ({ data, context }) => {
     await assertAdmin(context.supabase, context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -95,7 +95,7 @@ export const saveProduct = createServerFn({ method: "POST" })
 
 export const deleteProduct = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) => z.object({ id: z.string().uuid() }).parse(data))
+  .validator((data: unknown) => z.object({ id: z.string().uuid() }).parse(data))
   .handler(async ({ data, context }) => {
     await assertAdmin(context.supabase, context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -107,7 +107,7 @@ export const deleteProduct = createServerFn({ method: "POST" })
 /** Uploads a cover image or a downloadable file. Admin only. */
 export const uploadProductAsset = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: FormData) => {
+  .validator((data: FormData) => {
     if (!(data instanceof FormData)) throw new Error("Expected a file upload.");
     const file = data.get("file");
     const kind = String(data.get("kind") ?? "");

@@ -197,37 +197,6 @@
   opacity: 0.07;
 }
 
-/* ---------- Custom cursor ---------- */
-
-.has-custom-cursor,
-.has-custom-cursor a,
-.has-custom-cursor button {
-  cursor: none;
-}
-
-.cursor-dot {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 90;
-  width: 10px;
-  height: 10px;
-  border-radius: 9999px;
-  background: var(--primary);
-  pointer-events: none;
-  opacity: 0;
-  transition:
-    width 220ms cubic-bezier(0.16, 1, 0.3, 1),
-    height 220ms cubic-bezier(0.16, 1, 0.3, 1),
-    background 220ms ease,
-    opacity 200ms ease;
-}
-
-.cursor-dot[data-active="true"] {
-  width: 46px;
-  height: 46px;
-  background: color-mix(in oklab, var(--primary) 32%, transparent);
-}
 
 /* ---------- Marquee ---------- */
 

@@ -157,8 +157,6 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <CartProvider>
-        <SmoothScroll />
-        <CustomCursor />
         <div className="flex min-h-screen flex-col">
           <SiteHeader />
           <main className="flex-1 pt-20">
@@ -169,7 +167,7 @@ function RootComponent() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.35, ease: "easeOut" }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
               >
                 <Outlet />
               </motion.div>
@@ -177,7 +175,6 @@ function RootComponent() {
           </main>
           <SiteFooter />
         </div>
-        <div className="grain-overlay" aria-hidden="true" />
         <Toaster />
       </CartProvider>
     </QueryClientProvider>

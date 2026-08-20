@@ -97,6 +97,9 @@ function ProductDetail() {
               <img
                 src={gallery[active]}
                 alt={`${product.title} preview`}
+                referrerPolicy="no-referrer"
+                loading="eager"
+                decoding="async"
                 width={1400}
                 height={1050}
                 className="aspect-[4/3] w-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]"
@@ -120,7 +123,7 @@ function ProductDetail() {
                     (index === active ? "border-primary" : "border-border")
                   }
                 >
-                  <img src={src} alt="" className="h-full w-full object-cover" />
+                  <img src={src} alt="" referrerPolicy="no-referrer" loading="lazy" className="h-full w-full object-cover" />
                 </button>
               ))}
             </div>

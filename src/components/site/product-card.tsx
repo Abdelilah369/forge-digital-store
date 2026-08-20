@@ -35,6 +35,8 @@ export function ProductCard({
             src={product.cover_url}
             alt={`${product.title} cover`}
             loading="lazy"
+            decoding="async"
+            referrerPolicy="no-referrer"
             width={1400}
             height={900}
             className="h-full w-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]"

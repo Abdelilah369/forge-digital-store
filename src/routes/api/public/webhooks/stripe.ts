@@ -29,8 +29,16 @@ export const Route = createFileRoute("/api/public/webhooks/stripe")({
         const signature = request.headers.get("stripe-signature");
         const payload = await request.text();
 
-        if (!secret) return new Response("Webhook secret not configured", { status: 500 });
+        if (!secret) {
+          console.warn("[Stripe Webhook] Webhook secret not configured. Returning 200 for local development stability.");
+          return new Response(JSON.stringify({ warning: "Webhook secret not configured" }), { 
+            status: 200, 
+            headers: { "content-type": "application/json" } 
+          });
+        }
+        
         if (!signature || !verifyStripeSignature(payload, signature, secret)) {
+          console.error("[Stripe Webhook] Invalid signature");
           return new Response("Invalid signature", { status: 401 });
         }
 

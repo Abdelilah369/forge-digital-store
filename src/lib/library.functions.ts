@@ -54,7 +54,7 @@ export const listMyLibrary = createServerFn({ method: "GET" })
 
 export const createDownloadLink = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) => z.object({ productId: z.string().uuid() }).parse(data))
+  .validator((data: unknown) => z.object({ productId: z.string().uuid() }).parse(data))
   .handler(async ({ data, context }) => {
     // Entitlement check runs as the signed-in user, under RLS.
     const { data: purchase, error } = await context.supabase

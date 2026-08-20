@@ -10,7 +10,7 @@ const checkoutInput = z.object({
 
 export const createCheckoutSession = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) => checkoutInput.parse(data))
+  .validator((data: unknown) => checkoutInput.parse(data))
   .handler(async ({ data, context }) => {
     const { supabase, userId, claims } = context;
 
@@ -56,7 +56,7 @@ export const createCheckoutSession = createServerFn({ method: "POST" })
 
 export const confirmCheckout = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) => z.object({ sessionId: z.string().min(1) }).parse(data))
+  .validator((data: unknown) => z.object({ sessionId: z.string().min(1) }).parse(data))
   .handler(async ({ data, context }) => {
     const { stripeGet } = await import("./stripe.server");
     const { fulfillSession } = await import("./fulfillment.server");

@@ -42,7 +42,16 @@ export const Route = createFileRoute("/api/public/webhooks/stripe")({
         if (event.type === "checkout.session.completed") {
           const { fulfillSession } = await import("@/lib/fulfillment.server");
           type Session = import("@/lib/stripe.server").StripeCheckoutSession;
-          await fulfillSession(event.data.object as unknown as Session);
+          try {
+            const result = await fulfillSession(event.data.object as unknown as Session);
+            console.log("[Stripe Webhook] Fulfillment result:", result);
+          } catch (err) {
+            console.error("[Stripe Webhook] Fulfillment error:", err);
+            return new Response(
+              JSON.stringify({ error: err instanceof Error ? err.message : "Fulfillment failed" }),
+              { status: 500, headers: { "content-type": "application/json" } }
+            );
+          }
         }
 
         return new Response(JSON.stringify({ received: true }), {

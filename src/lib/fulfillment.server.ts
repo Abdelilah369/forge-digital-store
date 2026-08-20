@@ -20,7 +20,7 @@ export async function fulfillSession(session: StripeCheckoutSession) {
     return { fulfilled: false as const, reason: "missing_metadata" };
   }
 
-  const { data: order } = await supabaseAdmin
+  const { data: order, error: orderError } = await supabaseAdmin
     .from("orders")
     .upsert(
       {
@@ -33,7 +33,12 @@ export async function fulfillSession(session: StripeCheckoutSession) {
       { onConflict: "stripe_session_id" },
     )
     .select("id")
-    .single();
+    .maybeSingle();
+
+  if (orderError) {
+    console.error("[Fulfillment] Order upsert error:", orderError);
+    throw new Error(`Failed to record order: ${orderError.message}`);
+  }
 
   const { data: products } = await supabaseAdmin
     .from("products")
@@ -59,7 +64,7 @@ export async function fulfillSession(session: StripeCheckoutSession) {
     }
   }
 
-  await supabaseAdmin.from("purchases").upsert(
+  const { error: purchaseError } = await supabaseAdmin.from("purchases").upsert(
     productIds.map((productId) => ({
       user_id: userId,
       product_id: productId,
@@ -67,6 +72,11 @@ export async function fulfillSession(session: StripeCheckoutSession) {
     })),
     { onConflict: "user_id,product_id", ignoreDuplicates: true },
   );
+
+  if (purchaseError) {
+    console.error("[Fulfillment] Purchase upsert error:", purchaseError);
+    throw new Error(`Failed to grant purchases: ${purchaseError.message}`);
+  }
 
   return { fulfilled: true as const, productIds };
 }

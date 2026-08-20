@@ -11,7 +11,7 @@ export async function fulfillSession(session: StripeCheckoutSession) {
   }
 
   const userId = session.client_reference_id;
-  const productIds = (session.metadata?.["product_ids"] ?? "")
+  const productIds = (session.metadata?.product_ids || session.metadata?.["product_ids"] || "")
     .split(",")
     .map((id) => id.trim())
     .filter(Boolean);

@@ -319,7 +319,7 @@
 }
 
 /* ---------- Art direction for product imagery ---------- */
-/* Warm duotone + fine grain so placeholder renders read as art-directed. */
+/* Vivid true color with subtle luxury glass finish */
 
 .art-frame {
   position: relative;
@@ -328,32 +328,8 @@
 }
 
 .art-frame img {
-  filter: grayscale(1) contrast(1.06) brightness(1.02);
-}
-
-.art-frame::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background: linear-gradient(
-    180deg,
-    color-mix(in oklab, var(--primary) 30%, transparent),
-    color-mix(in oklab, var(--ink) 34%, transparent)
-  );
-  mix-blend-mode: color;
-}
-
-.art-frame::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-  opacity: 0.14;
-  mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23g)'/%3E%3C/svg%3E");
+  filter: contrast(1.03) brightness(1.01);
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* ---------- Skeleton placeholders ---------- */

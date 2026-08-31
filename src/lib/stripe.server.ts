@@ -21,12 +21,14 @@ function encode(params: Record<string, string | number | undefined>): string {
 export async function stripePost<T>(
   path: string,
   params: Record<string, string | number | undefined>,
+  extraHeaders: Record<string, string> = {},
 ): Promise<T> {
   const response = await fetch(`${STRIPE_API}${path}`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${getStripeKey()}`,
       "Content-Type": "application/x-www-form-urlencoded",
+      ...extraHeaders,
     },
     body: encode(params),
   });

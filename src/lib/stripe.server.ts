@@ -1,5 +1,9 @@
 const STRIPE_API = "https://api.stripe.com/v1";
 
+export function isStripeConfigured(): boolean {
+  return Boolean(process.env["STRIPE_SECRET_KEY"]);
+}
+
 export function getStripeKey(): string {
   const key = process.env["STRIPE_SECRET_KEY"];
   if (!key) {
